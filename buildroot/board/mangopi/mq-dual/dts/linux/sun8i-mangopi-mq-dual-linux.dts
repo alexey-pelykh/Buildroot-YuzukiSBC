@@ -1076,6 +1076,7 @@ chn_cfg_mode     : Hardware DE channel allocation config. 0:single display with 
 	interface       = <1>;
 	dac_type0       = <0>;
 	dac_src0        = <0>;
+    tv_power        = "pio-33";
 
 	status =  "okay";
 };
@@ -1516,4 +1517,66 @@ pull up or pull down(default 0), driver level(default 1), data>
 	allwinner,filter-type = <0x1>;
 	allwinner,ts-attached;
 	status = "okay";
+};
+
+/*
+tvd configuration
+used                   (create device, 0: do not create device, 1: create device)
+agc_auto_enable        (0: agc manual mode,agc_manual_value is valid; 1: agc auto mode)
+agc_manual_value       (agc manual value, default value is 64)
+cagc_enable            (cagc        0: disable, 1: enable)
+fliter_used            (3d fliter   0: disable, 1: enable)
+support two PMU power  (tvd_power0, tvd_power1)
+support two GPIO power (tvd_gpio0, tvd_gpio1)
+NOTICE: If tvd need pmu power or gpio power,params need be configured under [tvd]
+tvd_sw                 (the switch of all tvd driver.)
+tvd_interface          (0: cvbs, 1: ypbpr,)
+tvd_format             (0:TVD_PL_YUV420 , 1: MB_YUV420, 2: TVD_PL_YUV422)
+tvd_system             (0:ntsc, 1:pal)
+tvd_row                (total row number in multi channel mode 1-2)
+tvd_column             (total column number in multi channel mode 1-2)
+tvd_channelx_en        (0:disable, 1~4:position in multi channel mode,In single channel
+                       mode,mean enable)
+tvd_row*tvd_column is the total tvd channel number to be used in multichannel mode
++--------------------+--------------------+
+|                    |                    |
+|                    |                    |
+|         1          |         2          |
+|                    |                    |
+|                    |                    |
++--------------------+--------------------+
+|                    |                    |
+|                    |                    |
+|         3          |         4          |
+|                    |                    |
+|                    |                    |
++--------------------+--------------------+
+*/
+
+&tvd {
+	tvd_sw          = <1>;
+	tvd_interface   = <0>;
+	tvd_format      = <0>;
+	tvd_system      = <1>;
+	tvd_row         = <1>;
+	tvd_column      = <1>;
+	tvd_channel0_en = <1>;
+	tvd_channel1_en = <0>;
+	tvd_channel2_en = <0>;
+	tvd_channel3_en = <0>;
+	/*tvd_gpio0 = <&pio PD 22 GPIO_ACTIVE_HIGH>;*/
+	/*tvd_gpio1 = <&pio PD 23 GPIO_ACTIVE_HIGH>;*/
+	/*tvd_gpio2 = <&pio PD 24 GPIO_ACTIVE_HIGH>;*/
+	/*	dc1sw-supply = <&reg_dc1sw>;*/
+	/*	eldo3-supply = <&reg_eldo3>;*/
+	/*tvd_power0      = "dc1sw"*/
+	/*tvd_power1      = "eldo3"*/
+};
+
+&tvd0 {
+	used                    = <1>;
+	agc_auto_enable         = <1>;
+	agc_manual_value        = <64>;
+	cagc_enable             = <1>;
+	fliter_used             = <1>;
 };

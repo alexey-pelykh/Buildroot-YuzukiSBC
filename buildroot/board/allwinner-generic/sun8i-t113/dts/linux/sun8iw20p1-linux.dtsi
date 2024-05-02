@@ -47,6 +47,9 @@
 		pwm6 = &pwm6;
 		pwm7 = &pwm7;
 		ir0 = &s_cir0;
+        ve0 = &ve;
+		tvd = &tvd;
+		tvd0 = &tvd0;
 		tv0 = &tv0;
 		share_space0 = &share_space0;
 	};
@@ -1975,6 +1978,44 @@
 			nvmem-cells = <&ths_calib>;
 			nvmem-cell-names = "calibration";
 			#thermal-sensor-cells = <1>;
+		};
+
+        tvd: tvd@05c00000 {
+			compatible = "allwinner,sunxi-tvd";
+			reg = <0x0 0x05c00000 0x0 0x00010000>;/*tvd_top*/
+			interrupts = <GIC_SPI 107 IRQ_TYPE_LEVEL_HIGH>;
+
+			clocks = <&ccu CLK_BUS_TVD_TOP>,
+			<&ccu CLK_MBUS_TVIN>;
+			clock-names = "clk_bus_tvd_top",
+			"clk_mbus_tvd";
+
+			resets = <&ccu RST_BUS_TVD_TOP>;
+			reset-names = "rst_bus_tvd_top";
+
+			tvd-number = <1>;
+			tvds = <&tvd0>;
+			status = "okay";
+		};
+
+		tvd0: tvd0@05c01000 {
+			compatible = "allwinner,sunxi-tvd0";
+			reg = <0x0 0x05c01000 0x0 0x00010000>;
+			interrupts = <GIC_SPI 107 IRQ_TYPE_LEVEL_HIGH>;
+
+			clocks = <&ccu CLK_TVD>,
+			<&ccu CLK_BUS_TVD>;
+			clock-names = "clk_tvd0","clk_bus_tvd0";
+
+			resets = <&ccu RST_BUS_TVD>;
+			reset-names = "rst_bus_tvd0";
+
+			assigned-clocks = <&ccu CLK_TVD>;
+			assigned-clock-parents = <&ccu CLK_PLL_VIDEO1>;
+
+			tvd_used = <1>;
+			tvd_if = <0>;
+			status = "okay";
 		};
 	};
 };
